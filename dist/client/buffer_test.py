@@ -19,7 +19,7 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-import dash_buffer
+from . import dash_buffer
 import time
 import copy
 
@@ -51,11 +51,11 @@ def run_test(segment_arrival_times=SEGMENT_ARRIVAL_TIMES):
                 db.write(segment)
                 break
             if actual_time > arrival_time:
-                print "ERROR: Missed the time slot for segemt {}".format(count)
+                print("ERROR: Missed the time slot for segemt {}".format(count))
                 break
             time.sleep(1)
     if time.time() - start_time >= 40:
-        print "Killing the player after 40 seconds"
+        print("Killing the player after 40 seconds")
         db.stop()
 
 

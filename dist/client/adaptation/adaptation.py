@@ -4,7 +4,7 @@ Adaptation algorithms
 2. weighted_dash
 """
 
-from __future__ import division
+
 
 
 def calculate_rate_index(bitrates, curr_rate):

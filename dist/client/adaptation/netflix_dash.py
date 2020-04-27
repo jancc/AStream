@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from __future__ import division
+
 __author__ = 'pjuluri'
 
 """
@@ -56,7 +56,7 @@ def get_rate_netflix(bitrates, current_buffer_occupancy, buffer_size=config_dash
     # Calculate the current buffer occupancy percentage
     try:
         buffer_percentage = current_buffer_occupancy/buffer_size
-        print buffer_percentage
+        print(buffer_percentage)
     except ZeroDivisionError:
         config_dash.LOG.error("Buffer Size was found to be Zero")
         return None
@@ -69,7 +69,7 @@ def get_rate_netflix(bitrates, current_buffer_occupancy, buffer_size=config_dash
         next_bitrate = bitrates[-1]
     else:
         config_dash.LOG.info("Rate Map: {}".format(rate_map))
-        for marker in reversed(rate_map.keys()):
+        for marker in reversed(list(rate_map.keys())):
             if marker < buffer_percentage:
                 break
             next_bitrate = rate_map[marker]

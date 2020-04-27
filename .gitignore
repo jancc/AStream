@@ -1,6 +1,7 @@
 #################
 ## Eclipse
 #################
+*.so
 *.m4s
 *.csv
 *.pydevproject

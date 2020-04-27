@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import with_statement, absolute_import
+
 import os
 import re
 import platform
@@ -99,7 +99,7 @@ def ping_ip(ip_address, ping_packets=config_dash.PING_PACKETS, verbose=False):
 
         config_dash.LOG.debug(
             "RTT stats found for ip: %s" % ip_address)
-        return map(float, rtt_values)
+        return list(map(float, rtt_values))
     config_dash.LOG.error(
         "The ping returned an unexpected RTT fomat: %s" % rtt_stats)
     return None

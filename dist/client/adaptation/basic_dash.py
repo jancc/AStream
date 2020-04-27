@@ -1,7 +1,7 @@
 __author__ = 'pjuluri'
 
 import config_dash
-from adaptation import calculate_rate_index
+from .adaptation import calculate_rate_index
 
 
 def basic_dash(segment_number, bitrates, average_dwn_time,

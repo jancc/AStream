@@ -3,7 +3,7 @@
     Contact : pjuluri@umkc.edu
 
 """
-from __future__ import division
+
 import re
 import config_dash
 
@@ -142,6 +142,8 @@ def read_mpd(mpd_file, dashplayback):
     #print child_period
     video_segment_duration = None
     if FORMAT == 0:
+        print("mpd format 0")
+
         for adaptation_set in child_period:
 
             if 'mimeType' in adaptation_set.attrib:
@@ -174,7 +176,7 @@ def read_mpd(mpd_file, dashplayback):
                                     try:
                                         segment_size = float(segment_info.attrib['size']) * float(
                                             SIZE_DICT[segment_info.attrib['scale']])
-                                    except KeyError, e:
+                                    except KeyError as e:
                                         config_dash.LOG.error("Error in reading Segment sizes :{}".format(e))
                                         continue
                                     media_object[bandwidth].segment_sizes.append(segment_size)
@@ -183,9 +185,11 @@ def read_mpd(mpd_file, dashplayback):
                                         segment_info.attrib['timescale']))
                                     config_dash.LOG.debug("Segment Playback Duration = {}".format(video_segment_duration))
     elif FORMAT == 1: #differentFormat
+        print("mpd format 1")
 
         for adaptation_set in child_period:
             for representation in adaptation_set:
+                representationId = representation.attrib["id"]
                 media_found = False
                 if 'audio' in representation.attrib['mimeType']:
                     media_object = dashplayback.audio
@@ -202,12 +206,12 @@ def read_mpd(mpd_file, dashplayback):
                 config_dash.JSON_HANDLE["video_metadata"]['available_bitrates'].append(bandwidth)
                 media_object[bandwidth] = MediaObject()
                 media_object[bandwidth].segment_sizes = []
-                media_object[bandwidth].start = int(representation.attrib['startWithSAP'])
+                if 'startWithSAP' in representation.attrib:
+                    media_object[bandwidth].start = int(representation.attrib['startWithSAP'])
+                else:
+                    media_object[bandwidth].start = 0
                 media_object[bandwidth].base_url = root[0].text
-                tempcut_url = root[0].text.split('/',3)[2:]
-                cut_url = tempcut_url[1]
-                print "cut_url = {}".format(cut_url)
-                #print root[0].text
+                cut_url = ''
                 for segment_info in representation:
                     if "SegmentBase" in get_tag_name(segment_info.tag):
                         for init in segment_info:
@@ -215,30 +219,39 @@ def read_mpd(mpd_file, dashplayback):
 
                     if 'video' in representation.attrib['mimeType']:
                         if "SegmentList" in get_tag_name(segment_info.tag):
-                            video_segment_duration = (float(segment_info.attrib['duration']))
                             config_dash.LOG.debug("Segment Playback Duration = {}".format(video_segment_duration))
-                            for segment_URL in segment_info:
-                                if "SegmentURL" in get_tag_name(segment_URL.tag):
-                                    try:
-                                        Ssize = segment_URL.attrib['media'].split('/')[0]
-                                        Ssize = Ssize.split('_')[-1];
-                                        Ssize = Ssize.split('kbit')[0];
-                                        #print "ssize"
-                                        #print Ssize
-                                        segment_size = float(Ssize) * float(
-                                            SIZE_DICT["Kbits"])
-                                    except KeyError, e:
-                                        config_dash.LOG.error("Error in reading Segment sizes :{}".format(e))
-                                        continue
-                                    segurl = cut_url + segment_URL.attrib['media']
+
+                            video_segment_duration = segment_info.attrib["duration"]
+
+                            for segment in segment_info:
+                                if "Initialization" in get_tag_name(segment.tag):
+                                    initialization = segment.attrib["sourceURL"]
+                                    media_object[bandwidth].initialization = initialization
+
+                                if "SegmentURL" in get_tag_name(segment.tag):
+                                    if video_segment_duration == None:
+                                        split = segment.attrib['media'].split('.')
+                                        seg_dur = split[1]
+                                        if len(split) > 2:
+                                            seg_dur = split[1] + '.' + split[2]
+                                        if seg_dur != None and len(seg_dur) > 1:
+                                            seg_dur = seg_dur[1:len(seg_dur)]
+                                            seg_dur = seg_dur.split('s')[0]
+                                            video_segment_duration = seg_dur
+                                        else:
+                                            # Default segment playback time is 1 second
+                                            video_segment_duration = '1'
+
                                     #print segurl
+                                    segurl = cut_url + segment.attrib['media']
+                                    print(segurl)
                                     URL_LIST.append(segurl)
-                                    media_object[bandwidth].segment_sizes.append(segment_size)
+                                    #media_object[bandwidth].segment_sizes.append(segment_size)
 
 
 
     else:
 
-        print "Error: UknownFormat of MPD file!"
+        print("Error: UknownFormat of MPD file!")
 
-    return dashplayback, int(video_segment_duration)
+    return dashplayback, float(video_segment_duration)
