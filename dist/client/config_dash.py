@@ -63,10 +63,10 @@ SARA_SAMPLE_COUNT = 5
 # Constants for the Buffer in the Weighted adaptation scheme (in segments)
 INITIAL_BUFFERING_COUNT = 1
 RE_BUFFERING_COUNT = 1
-ALPHA_BUFFER_COUNT = 5
-BETA_BUFFER_COUNT = 10
+ALPHA_BUFFER_COUNT = 1
+BETA_BUFFER_COUNT = 2
 # Set the size of the buffer in terms of segments. Set to unlimited if 0 or None
-MAX_BUFFER_SIZE = None
+MAX_BUFFER_SIZE = 2
 
 # ---------------------------------------------------
 # Netflix (Buffer-based) ADAPTATION

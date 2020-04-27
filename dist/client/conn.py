@@ -21,8 +21,12 @@ lib.StopLogging.argtypes = []
 import time
 last_time = None
 
+schedulerNameEncoded = None
+
 def setupPM(useQUIC, useMP, keepAlive, schedulerName, congestionControl='cubic'):
-    scheduler = GoString(schedulerName.encode('ascii'), len(schedulerName))
+    global schedulerNameEncoded
+    schedulerNameEncoded = schedulerName.encode('ascii')
+    scheduler = GoString(schedulerNameEncoded, len(schedulerNameEncoded))
     lib.ClientSetup(useQUIC, useMP, keepAlive, scheduler, GoString(b"", 0))
 
 def closeConnection():

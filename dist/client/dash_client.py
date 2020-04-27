@@ -21,6 +21,7 @@ import random
 import os
 import sys
 import errno
+import ssl
 import timeit
 import http.client
 from string import ascii_letters, digits
@@ -65,7 +66,13 @@ def get_mpd(url):
     """ Module to download the MPD from the URL and save it to file"""
     print(url)
     try:
-        connection = urllib.request.urlopen(url, timeout=10)
+        if url.find('https://') == 0:
+            ctx = ssl.create_default_context()
+            ctx.check_hostname = False
+            ctx.verify_mode = ssl.CERT_NONE
+            connection = urllib.request.urlopen(url, timeout=10, context=ctx)
+        else:
+            connection = urllib.request.urlopen(url, timeout=10)
     except urllib.error.HTTPError as error:
         config_dash.LOG.error("Unable to download MPD file HTTP Error: %s" % error.code)
         return None
