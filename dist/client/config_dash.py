@@ -23,24 +23,24 @@ from time import strftime
 import os
 # The configuration file for the AStream module
 # create logger
-LOG_NAME = 'AStream_log'
+LOG_NAME = None
 LOG_LEVEL = None
 
 # Set '-' to print to screen
-LOG_FOLDER = "ASTREAM_LOGS/"
-if not os.path.exists(LOG_FOLDER):
+LOG_FOLDER = None
+if LOG_FOLDER and not os.path.exists(LOG_FOLDER):
     os.makedirs(LOG_FOLDER)
 
-LOG_FILENAME = os.path.join(LOG_FOLDER, 'DASH_RUNTIME_LOG')
+LOG_FILENAME = None
 # Logs related to the statistics for the video
 # PLAYBACK_LOG_FILENAME = os.path.join(LOG_FOLDER, strftime('DASH_PLAYBACK_LOG_%Y-%m-%d.%H_%M_%S.csv'))
 # Buffer logs created by dash_buffer.py
-BUFFER_LOG_FILENAME = os.path.join(LOG_FOLDER, strftime('DASH_BUFFER_LOG_%Y-%m-%d.%H_%M_%S.csv'))
+BUFFER_LOG_FILENAME = os.path.join(LOG_FOLDER, strftime('DASH_BUFFER_LOG_%Y-%m-%d.%H_%M_%S.csv')) if LOG_FOLDER else None
 LOG_FILE_HANDLE = None
 # To be set by configure_log_file.py
 LOG = None
 # JSON Filename
-JSON_LOG = os.path.join(LOG_FOLDER, strftime('ASTREAM_%Y-%m-%d.%H_%M_%S.json'))
+JSON_LOG = os.path.join(LOG_FOLDER, strftime('ASTREAM_%Y-%m-%d.%H_%M_%S.json')) if LOG_FOLDER else None
 JSON_HANDLE = dict()
 JSON_HANDLE['playback_info'] = {'start_time': None,
                                 'end_time': None,

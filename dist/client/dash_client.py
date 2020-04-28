@@ -24,15 +24,16 @@ import errno
 import ssl
 import timeit
 import http.client
+import io
 from string import ascii_letters, digits
 from argparse import ArgumentParser
 from multiprocessing import Process, Queue
 from collections import defaultdict
 from adaptation import basic_dash, basic_dash2, weighted_dash, netflix_dash
 from adaptation.adaptation import WeightedMean
+from configure_log_file import configure_log_file, write_json
 import config_dash
 import dash_buffer
-from configure_log_file import configure_log_file, write_json
 import time
 
 
@@ -89,12 +90,8 @@ def get_mpd(url):
     
     mpd_data = connection.read()
     connection.close()
-    mpd_file = url.split('/')[-1]
-    mpd_file_handle = open(mpd_file, 'wb')
-    mpd_file_handle.write(mpd_data)
-    mpd_file_handle.close()
-    config_dash.LOG.info("Downloaded the MPD file {}".format(mpd_file))
-    return mpd_file
+    config_dash.LOG.info("Downloaded the MPD file")
+    return io.BytesIO(mpd_data)
 
 
 def get_bandwidth(data, duration):
@@ -227,7 +224,6 @@ def start_playback_smart(dp_object, domain, playback_type=None, download=False, 
     # Start playback of all the segments
     for segment_number, segment in enumerate(dp_list, dp_object.video[current_bitrate].start):
         config_dash.LOG.info(" {}: Processing the segment {}".format(playback_type.upper(), segment_number))
-        write_json()
         if not previous_bitrate:
             previous_bitrate = current_bitrate
         if SEGMENT_LIMIT:
@@ -364,7 +360,6 @@ def start_playback_smart(dp_object, domain, playback_type=None, download=False, 
     # waiting for the player to finish playing
     while dash_player.playback_state not in dash_buffer.EXIT_STATES:
         time.sleep(1)
-    write_json()
     if not download:
         clean_files(file_identifier)
 
