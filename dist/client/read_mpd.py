@@ -221,7 +221,9 @@ def read_mpd(mpd_file, dashplayback):
                         if "SegmentList" in get_tag_name(segment_info.tag):
                             config_dash.LOG.debug("Segment Playback Duration = {}".format(video_segment_duration))
 
-                            video_segment_duration = segment_info.attrib["duration"]
+                            video_segment_duration = float(segment_info.attrib["duration"])
+                            if "timescale" in segment_info.attrib:
+                                video_segment_duration /= float(segment_info.attrib["timescale"])
 
                             for segment in segment_info:
                                 if "Initialization" in get_tag_name(segment.tag):
