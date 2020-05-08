@@ -487,6 +487,12 @@ def create_arguments(parser):
     parser.add_argument('-s', '--SCHEDULER',
                         default='lowRTT',
                         help="Scheduler in multipath usage (lowRTT, RR, redundant)")
+    parser.add_argument('--fec', action='store_true', default=False,
+                        help='Enable FEC')
+    parser.add_argument('--fecrcv', action='store_true', default=False,
+                        help='Enable FEC Recovered Frames')
+    parser.add_argument('--fecn', default=4,
+                        help='Number of data symbols in a FEC block')
 
 
 def main():
@@ -512,6 +518,7 @@ def main():
         return None
 
     glueConnection.setupPM(QUIC, MP, not NO_KEEP_ALIVE, SCHEDULER)
+    glueConnection.setupFEC(fec, fecrcv, "", int(fecn))
 
     config_dash.LOG.info('Downloading MPD file %s' % MPD)
     # Retrieve the MPD files for the video
