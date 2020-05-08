@@ -2,7 +2,6 @@ import logging
 import config_dash
 import sys
 from time import strftime
-import io
 import json
 
 def configure_log_file(playback_type="", log_file=config_dash.LOG_FILENAME):
@@ -33,7 +32,6 @@ def write_json(json_data=config_dash.JSON_HANDLE, json_file=config_dash.JSON_LOG
     :param json_data: dict
     :param json_file: json file
     :return: None
-        Using utf-8 to reduce size of the file
     """
-    with io.open(json_file, 'w', encoding='utf-8') as json_file_handle:
-        json_file_handle.write(str(json.dumps(json_data, ensure_ascii=False)))
+    with open(json_file, 'wb') as json_file_handle:
+        json_file_handle.write(json.dumps(json_data).encode())

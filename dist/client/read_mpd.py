@@ -124,7 +124,7 @@ def read_mpd(mpd_file, dashplayback):
     except IOError:
         config_dash.LOG.error("MPD file not found. Exiting")
         return None
-    config_dash.JSON_HANDLE["video_metadata"] = {'mpd_file': mpd_file}
+    config_dash.JSON_HANDLE["video_metadata"] = {}
     root = tree.getroot()
     if 'MPD' in get_tag_name(root.tag).upper():
         if MEDIA_PRESENTATION_DURATION in root.attrib:

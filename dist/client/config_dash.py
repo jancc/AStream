@@ -27,7 +27,7 @@ LOG_NAME = None
 LOG_LEVEL = None
 
 # Set '-' to print to screen
-LOG_FOLDER = None
+LOG_FOLDER = "log/"
 if LOG_FOLDER and not os.path.exists(LOG_FOLDER):
     os.makedirs(LOG_FOLDER)
 

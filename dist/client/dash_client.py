@@ -25,6 +25,7 @@ import ssl
 import timeit
 import http.client
 import io
+import json
 from string import ascii_letters, digits
 from argparse import ArgumentParser
 from multiprocessing import Process, Queue
@@ -542,6 +543,8 @@ def main():
     else:
         config_dash.LOG.error("Unknown Playback parameter {}".format(PLAYBACK))
         return None
+
+    write_json()
 
 if __name__ == "__main__":
     sys.exit(main())
