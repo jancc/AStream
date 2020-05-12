@@ -17,7 +17,7 @@ lib.DownloadSegment.argtypes = [GoString]
 lib.CloseConnection.argtypes = []
 lib.StartLogging.argtypes = [c_uint]
 lib.StopLogging.argtypes = []
-lib.FECSetup.argtypes = [c_bool,c_bool,GoString,c_uint]
+lib.FECSetup.argtypes = [c_bool,GoString,c_uint]
 
 import time
 last_time = None
@@ -30,10 +30,10 @@ def setupPM(useQUIC, useMP, keepAlive, schedulerName, congestionControl='cubic')
     scheduler = GoString(schedulerNameEncoded, len(schedulerNameEncoded))
     lib.ClientSetup(useQUIC, useMP, keepAlive, scheduler, GoString(b"", 0))
 
-def setupFEC(useFEC, useRecoveredFrames, scheme, nDataSymbols):
+def setupFEC(useFEC, scheme, nDataSymbols):
     schemeEncoded = scheme.encode('ascii')
     schemeGoStr = GoString(schemeEncoded, len(schemeEncoded))
-    lib.FECSetup(useFEC, useRecoveredFrames, schemeGoStr, nDataSymbols)
+    lib.FECSetup(useFEC, schemeGoStr, nDataSymbols)
 
 def closeConnection():
     lib.CloseConnection()
